@@ -9,5 +9,6 @@ GET     /                           controllers.Application.index()
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Eventos
-GET     /eventos                    controllers.EventosController.novo()
+GET     /eventos                    controllers.EventosController.lista()
+GET     /eventos/new                controllers.EventosController.novo()
 POST    /eventos                    controllers.EventosController.cria()

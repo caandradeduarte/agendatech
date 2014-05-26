@@ -1,15 +1,35 @@
+@(eventoForm:Form[Evento])
+
+@import helper._
+
 <html>
   <body>
-    <form action="@routes.EventosController.cria()" method="POST">
-      <input type="text" id="nome" name="nome">
+    @form(routes.EventosController.cria()) {
       
-      <input type="text" id="emailParaContato" name="emailParaContato">
+      @inputText(eventoForm("nome"))
       
-      <textarea id="descricao" name="descricao"></textarea>
+      @inputText(eventoForm("emailParaContato"))
       
-      <input type="text" id="site" name="site">
+      @textarea(eventoForm("descricao"))
+      
+      <select name="estado">
+        @for(estado <- Estado.values) {
+          <option value="@estado.name">@estado.name</option>
+        }
+      </select>
+      
+      @inputText(eventoForm("site"))
+      
+      @inputText(eventoForm("twitter"))
+      
+      <fieldset>
+        <legend>Período</legend>
+        @inputDate(eventoForm("dataDeInicio"))
+        
+        @inputDate(eventoForm("dataDeFim"))
+      </fieldset>
       
       <input type="submit" value="Novo Evento">
-    </form>
+    }
   </body>
 </html>
