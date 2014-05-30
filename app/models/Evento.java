@@ -1,6 +1,8 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +15,8 @@ import org.hibernate.validator.constraints.URL;
 
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
+import play.data.validation.ValidationError;
+import validators.annotations.FromNow;
 
 @Entity
 public class Evento {
@@ -40,6 +44,7 @@ public class Evento {
 	@Required
 	private String nome;
 
+	@FromNow
 	private Calendar dataDeInicio;
 
 	private Calendar dataDeFim;
@@ -114,6 +119,18 @@ public class Evento {
 
 	public void setDataDeFim(Calendar dataDeFim) {
 		this.dataDeFim = dataDeFim;
+	}
+	
+	public List<ValidationError> validate() {
+		ArrayList<ValidationError> errors = new ArrayList<ValidationError>();
+		if(dataDeFim == null) {
+			this.dataDeFim = (Calendar) dataDeInicio.clone();
+			return null;
+		}
+		if(!dataDeFim.after(dataDeInicio)) {
+			errors.add(new ValidationError("dataDeFim", "O fim deve ser após o início"));
+		}
+		return errors.isEmpty() ? null : errors;
 	}
 
 }
