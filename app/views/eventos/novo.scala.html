@@ -4,7 +4,7 @@
 
 <html>
   <body>
-    @form(routes.EventosController.cria()) {
+    @form(routes.EventosController.cria(), 'enctype -> "multipart/form-data") {
       
       @inputText(eventoForm("nome"))
       
@@ -28,6 +28,8 @@
         
         @inputDate(eventoForm("dataDeFim"))
       </fieldset>
+      
+      @inputFile(eventoForm("destaque"))
       
       <input type="submit" value="Novo Evento">
     }

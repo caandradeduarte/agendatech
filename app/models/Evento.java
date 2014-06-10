@@ -11,6 +11,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.hibernate.validator.constraints.URL;
 
 import play.data.validation.Constraints.Email;
@@ -23,104 +26,44 @@ public class Evento {
 
 	@Id
 	@GeneratedValue
+	@Getter @Setter
 	private Integer id;
 
 	@Email
+	@Getter @Setter
 	private String emailParaContato;
 
 	@Column(length = 2)
 	@Enumerated(EnumType.STRING)
+	@Getter @Setter
 	private Estado estado;
 
 	@Required
 	@Column(columnDefinition = "text")
+	@Getter @Setter
 	private String descricao;
 
 	@URL
+	@Getter @Setter
 	private String site;
 
+	@Getter @Setter
 	private String twitter;
 
 	@Required
+	@Getter @Setter
 	private String nome;
 
 	@FromNow
+	@Getter @Setter
 	private Calendar dataDeInicio;
 
+	@Getter @Setter
 	private Calendar dataDeFim;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getEmailParaContato() {
-		return emailParaContato;
-	}
-
-	public void setEmailParaContato(String emailParaContato) {
-		this.emailParaContato = emailParaContato;
-	}
-
-	public Estado getEstado() {
-		return estado;
-	}
-
-	public void setEstado(Estado estado) {
-		this.estado = estado;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public String getSite() {
-		return site;
-	}
-
-	public void setSite(String site) {
-		this.site = site;
-	}
-
-	public String getTwitter() {
-		return twitter;
-	}
-
-	public void setTwitter(String twitter) {
-		this.twitter = twitter;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public Calendar getDataDeInicio() {
-		return dataDeInicio;
-	}
-
-	public void setDataDeInicio(Calendar dataDeInicio) {
-		this.dataDeInicio = dataDeInicio;
-	}
-
-	public Calendar getDataDeFim() {
-		return dataDeFim;
-	}
-
-	public void setDataDeFim(Calendar dataDeFim) {
-		this.dataDeFim = dataDeFim;
-	}
 	
+	@Getter @Setter
+	private String caminhoImagem;
+
 	public List<ValidationError> validate() {
 		ArrayList<ValidationError> errors = new ArrayList<ValidationError>();
 		if(dataDeFim == null) {
