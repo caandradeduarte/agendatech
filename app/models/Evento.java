@@ -63,6 +63,9 @@ public class Evento {
 	
 	@Getter @Setter
 	private String caminhoImagem;
+	
+	@Getter @Setter
+	private boolean aprovado;
 
 	public List<ValidationError> validate() {
 		ArrayList<ValidationError> errors = new ArrayList<ValidationError>();

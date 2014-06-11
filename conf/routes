@@ -8,7 +8,12 @@ GET     /                           controllers.Application.index()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
+#Cache
+GET     /cache/invalida             controllers.CacheController.invalidate()
+
 # Eventos
 GET     /eventos                    controllers.EventosController.lista()
 GET     /eventos/new                controllers.EventosController.novo()
 POST    /eventos                    controllers.EventosController.cria()
+GET     /eventos/admin              controllers.admin.TodosEventosController.todos()
+GET     /eventos/admin/aprova/:id<[0-9]+>   controllers.admin.TodosEventosController.aprova(id:Integer)

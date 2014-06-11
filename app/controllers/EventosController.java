@@ -7,7 +7,11 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import models.Evento;
+import play.cache.Cached;
 import play.data.Form;
+import play.libs.F.Function;
+import play.libs.F.Function0;
+import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -24,20 +28,47 @@ public class EventosController extends Controller {
 		return ok(views.html.eventos.novo.render(eventoForm));
 	}
 	
-	public static Result cria() throws IOException {
+	public static Promise<Result> cria() throws IOException {
 		Form<Evento> formFromRequest = eventoForm.bindFromRequest();
+		
 		if(formFromRequest.hasErrors()) {
-			return badRequest(views.html.eventos.novo.render(formFromRequest));
+			return Promise.promise(new Function0<Result>() {
+
+				@Override
+				public Result apply() throws Throwable {
+					return badRequest(views.html.eventos.novo.render(formFromRequest));
+				}
+			});
 		}
+		
 		File destino = gravaDestaque();
 		Evento evento = formFromRequest.get();
 		evento.setCaminhoImagem(destino.getName());
+		
 		try {
 			Ebean.save(evento);
 		} catch (RuntimeException e) {
 			destino.delete();
 		}
-		return redirect(routes.EventosController.lista());
+		
+		Promise<Void> enviandoEmails = Promise.promise(new Function0<Void>() {
+
+			@Override
+			public Void apply() throws Throwable {
+				ControladorDeEmails.informaNovo(evento);
+				return null;
+			}
+		});
+		
+		Promise<Result> result = enviandoEmails.map(new Function<Void, Result>() {
+
+			@Override
+			public Result apply(Void arg0) throws Throwable {
+				return redirect(routes.EventosController.lista());
+			}
+		});
+
+		return result;
 	}
 	
 	private static File gravaDestaque() throws IOException {
@@ -54,6 +85,7 @@ public class EventosController extends Controller {
 		return new File("public/images/destaques", System.currentTimeMillis() + "_" + destaque.getFilename());
 	}
 
+	@Cached(key="home",duration=3600)
 	public static Result lista() {
 		List<Evento> eventos = Ebean.find(Evento.class).findList();
 		return ok(views.html.eventos.lista.render(eventos));
